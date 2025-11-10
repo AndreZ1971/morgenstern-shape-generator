@@ -1,0 +1,114 @@
+/* preview.css */
+.preview-section {
+    background: rgba(26, 26, 46, 0.9);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 2px solid #4a90e2;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+}
+
+.preview-section h2 {
+    color: #4a90e2;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 1.4em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#avatar-preview {
+    width: 100%;
+    height: 400px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 10px;
+    border: 2px solid #4a90e2;
+    margin-bottom: 15px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+#avatar-preview canvas {
+    border-radius: 8px;
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #4a90e2;
+    font-size: 18px;
+    text-align: center;
+    background: rgba(26, 26, 46, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #4a90e2;
+}
+
+.preview-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.preview-controls button {
+    background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+}
+
+.preview-controls button:hover {
+    background: linear-gradient(135deg, #357abd 0%, #2a5f9e 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 144, 226, 0.5);
+}
+
+.preview-controls button:active {
+    transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #avatar-preview {
+        height: 300px;
+    }
+    
+    .preview-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .preview-controls button {
+        width: 200px;
+    }
+    
+    .fallback-avatar {
+        transform: scale(0.8);
+    }
+}
+
+/* Fallback Preview Animation */
+.fallback-avatar .avatar-body {
+    transition: all 0.5s ease;
+}
+
+.fallback-avatar .arm {
+    transition: all 0.5s ease;
+}
+
+.fallback-avatar .leg {
+    transition: all 0.5s ease;
+}

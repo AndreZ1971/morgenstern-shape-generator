@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  sl-shape-generator:
+    build: .
+    container_name: sl-shape-generator
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./src:/usr/share/nginx/html
+      - ./logs:/var/log/nginx
+    environment:
+      - NODE_ENV=production
+      - API_URL=${API_URL:-http://localhost:3000}
+    restart: unless-stopped
+    networks:
+      - sl-shape-network
+
+  # Backend API für zukünftige KI-Features
+  sl-shape-api:
+    image: node:18-alpine
+    container_name: sl-shape-api
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    command: npm run dev
+    networks:
+      - sl-shape-network
+
+  # Redis für Session/Cache
+  redis:
+    image: redis:7-alpine
+    container_name: sl-shape-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - sl-shape-network
+
+  # Database für User-Presets (optional)
+  database:
+    image: postgres:15-alpine
+    container_name: sl-shape-db
+    environment:
+      - POSTGRES_DB=shapegenerator
+      - POSTGRES_USER=shapeuser
+      - POSTGRES_PASSWORD=shapepass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - sl-shape-network
+
+  # Monitoring mit Grafana/Prometheus
+  monitoring:
+    image: prom/prometheus:latest
+    container_name: sl-shape-monitoring
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - sl-shape-network
+
+volumes:
+  redis_data:
+  postgres_data:
+
+networks:
+  sl-shape-network:
+    driver: bridge

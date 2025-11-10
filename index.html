@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SL Shape Generator | Ronan Harris Style</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/sliders.css">
+    <link rel="stylesheet" href="css/preview.css">
+    <link rel="stylesheet" href="css/background.css">
+</head>
+<body>
+    <!-- Hintergrund-Elemente -->
+    <div class="particles"></div>
+    <div class="tech-lines"></div>
+    <div class="avatar-sections">
+        <div class="section section-head" data-section="head" title="Kopf"></div>
+        <div class="section section-torso" data-section="torso" title="Torso"></div>
+        <div class="section section-arms" data-section="arms-left" title="Linker Arm"></div>
+        <div class="section section-arms right" data-section="arms-right" title="Rechter Arm"></div>
+        <div class="section section-legs" data-section="legs" title="Beine"></div>
+        <div class="section section-feet" data-section="feet-left" title="Linker Fuß"></div>
+        <div class="section section-feet right" data-section="feet-right" title="Rechter Fuß"></div>
+    </div>
+
+    <div class="gender-switch">
+        <label for="gender-select">Geschlecht:</label>
+        <select id="gender-select">
+            <option value="male">Männlich</option>
+            <option value="female">Weiblich</option>
+        </select>
+    </div>
+    <div class="container">
+        <header>
+            <h1>🎭 SL Shape Generator</h1>
+            <p>Erstelle deinen perfekten Second Life Avatar</p>
+        </header>
+
+        <div class="main-content">
+            <!-- 3D Vorschau -->
+            <section class="preview-section">
+                <h2>Live Vorschau</h2>
+                <div id="avatar-preview">
+                    <div class="loading-spinner">🔄 3D Vorschau wird geladen...</div>
+                </div>
+                <div class="preview-controls">
+                    <button id="reset-preview">Reset</button>
+                    <button id="random-shape">Zufällig</button>
+                    <button id="toggle-grid">Grid An/Aus</button>
+                </div>
+            </section>
+
+            <!-- Shape Controls -->
+            <section class="controls-section">
+                <div class="tabs">
+                    <button class="tab-button active" data-tab="body">Körper</button>
+                    <button class="tab-button" data-tab="head">Kopf</button>
+                    <button class="tab-button" data-tab="eyes">Augen</button>
+                    <button class="tab-button" data-tab="ears">Ohren</button>
+                    <button class="tab-button" data-tab="nose">Nase</button>
+                    <button class="tab-button" data-tab="mouth">Mund</button>
+                    <button class="tab-button" data-tab="chin">Kinn</button>
+                    <button class="tab-button" data-tab="upperbody">Oberkörper</button>
+                    <button class="tab-button" data-tab="legs">Beine</button>
+                    <button class="tab-button" data-tab="presets">Presets</button>
+                </div>
+
+                <div class="tab-content">
+                    <div id="body-tab" class="tab-pane active">
+                        <!-- Körper Slider werden hier injected -->
+                    </div>
+                    <div id="head-tab" class="tab-pane">
+                        <!-- Kopf Slider werden hier injected -->
+                    </div>
+                    <div id="eyes-tab" class="tab-pane">
+                        <!-- Augen Slider werden hier injected -->
+                    </div>
+                    <div id="ears-tab" class="tab-pane">
+                        <!-- Ohren Slider werden hier injected -->
+                    </div>
+                    <div id="nose-tab" class="tab-pane">
+                        <!-- Nase Slider werden hier injected -->
+                    </div>
+                    <div id="mouth-tab" class="tab-pane">
+                        <!-- Mund Slider werden hier injected -->
+                    </div>
+                    <div id="chin-tab" class="tab-pane">
+                        <!-- Kinn Slider werden hier injected -->
+                    </div>
+                    <div id="upperbody-tab" class="tab-pane">
+                        <!-- Oberkörper Slider werden hier injected -->
+                    </div>
+                    <div id="legs-tab" class="tab-pane">
+                        <!-- Beine Slider werden hier injected -->
+                    </div>
+                    <div id="presets-tab" class="tab-pane">
+                        <h3>Vorlagen</h3>
+                        <div class="preset-grid"><!-- Buttons werden dynamisch generiert --></div>
+
+                        <div class="xml-import">
+                            <h4>XML-Import (Second Life Shape)</h4>
+                            <input type="file" id="xml-import-file" accept=".xml">
+                            <button id="import-xml-btn">XML importieren</button>
+                            <div id="xml-import-status"></div>
+                        </div>
+
+                        <div class="custom-presets">
+                            <h4>Eigene Presets</h4>
+                            <div class="preset-save">
+                                <input type="text" id="preset-name" placeholder="Preset Name">
+                                <button id="save-preset">Speichern</button>
+                            </div>
+                            <div id="custom-presets-list" class="preset-grid">
+                                <!-- Benutzer-Presets werden hier angezeigt -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Export Section -->
+        <section class="export-section">
+            <h2>Export</h2>
+            <div class="export-options">
+                <button id="export-xml">XML Export</button>
+                <button id="export-notecard">Notecard Format</button>
+            </div>
+            <div class="export-meta">
+                <label for="shape-name">Shape Name:</label>
+                <input type="text" id="shape-name" placeholder="Mein Avatar Shape">
+                <span class="param-count" id="param-count">0 Parameter</span>
+            </div>
+            <textarea id="export-output" readonly placeholder="Export-Daten erscheinen hier..."></textarea>
+            <div class="export-actions">
+                <button id="copy-export">In Zwischenablage kopieren</button>
+                <button id="download-export">Download</button>
+            </div>
+        </section>
+
+        <!-- Stats Panel -->
+        <div class="stats-panel">
+            <div class="stat">
+                <span class="stat-label">Aktive Parameter:</span>
+                <span class="stat-value" id="active-params">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Letzte Änderung:</span>
+                <span class="stat-value" id="last-change">-</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Aktive Section:</span>
+                <span class="stat-value" id="active-section">-</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification System -->
+    <div id="notification" class="notification hidden">
+        <span id="notification-text"></span>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Lokale Kopien für maximale Kompatibilität -->
+    <script src="js/three.min.js"></script>
+    <script src="js/GLTFLoader.js"></script>
+    <script src="js/avatar-loader.js"></script>
+    
+    <!-- Shape Parameter und Presets müssen ZUERST geladen werden -->
+    <script>
+
+        // Gender Switch UI wird jetzt direkt im HTML eingefügt
+
+        // Globale Shape Parameter für beide Geschlechter
+        window.SHAPE_PARAMETERS = {
+            male: {
+                body: [
+                    { id: "body_height", name: "Größe", min: 0, max: 100, default: 65 },
+                    { id: "body_thickness", name: "Körperbreite", min: 0, max: 100, default: 45 },
+                    { id: "body_fat", name: "Körperfett", min: 0, max: 100, default: 25 },
+                    { id: "body_float", name: "Schweben", min: 0, max: 100, default: 40 }
+                ],
+                head: [
+                    { id: "head_size", name: "Kopfgröße", min: 0, max: 100, default: 48 },
+                    { id: "head_stretch", name: "Kopfdtreckung", min: 0, max: 100, default: 52 },
+                    { id: "head_shape", name: "Kopfform", min: 0, max: 100, default: 55 },
+                    { id: "egg_head", name: "Eierkopf", min: 0, max: 100, default: 35 },
+                    { id: "head_length", name: "Kopflänge", min: 0, max: 100, default: 58 },
+                    { id: "face_distortion", name: "Gesichtsverzerrung", min: 0, max: 100, default: 40 },
+                    { id: "forehead_angle", name: "Stirnwinkel", min: 0, max: 100, default: 62 },
+                    { id: "brow_size", name: "Brauengröße", min: 0, max: 100, default: 60 },
+                    { id: "cheeks_upper", name: "Obere Wangen", min: 0, max: 100, default: 45 },
+                    { id: "cheeks_lower", name: "Wangen unterer Bereich", min: 0, max: 100, default: 42 },
+                    { id: "cheekbones", name: "Wangenknochen", min: 0, max: 100, default: 68 }
+                ],
+                eyes: [
+                    { id: "eye_size", name: "Augengröße", min: 0, max: 100, default: 52 },
+                    { id: "eye_openings", name: "Öffnungen", min: 0, max: 100, default: 55 },
+                    { id: "eye_position", name: "Augenstand", min: 0, max: 100, default: 50 },
+                    { id: "eye_outer_corners", name: "Äußere Augenwinkel", min: 0, max: 100, default: 48 },
+                    { id: "eye_nose_corner", name: "Ecke nasenseite", min: 0, max: 100, default: 45 },
+                    { id: "sunken_eyes", name: "Eingesunkene Augen", min: 0, max: 100, default: 58 },
+                    { id: "upper_eyelid", name: "Obere Lidfalte", min: 0, max: 100, default: 52 },
+                    { id: "eye_edges", name: "Augenränder", min: 0, max: 100, default: 48 },
+                    { id: "puffy_eyelids", name: "Geschwollene Lider", min: 0, max: 100, default: 35 },
+                    { id: "eyelash_length", name: "Wimpernlänge", min: 0, max: 100, default: 45 },
+                    { id: "eye_symmetry", name: "Symmetrie", min: 0, max: 100, default: 52 }
+                ],
+                ears: [
+                    { id: "ear_size", name: "Ohrengröße", min: 0, max: 100, default: 48 },
+                    { id: "ear_angle", name: "Ohrenwinkel", min: 0, max: 100, default: 50 },
+                    { id: "attached_earlobes", name: "Angewachsene Ohrläppchen", min: 0, max: 100, default: 55 },
+                    { id: "ear_tips", name: "Ohrenspitzen", min: 0, max: 100, default: 52 }
+                ],
+                nose: [
+                    { id: "nose_size", name: "Größe", min: 0, max: 100, default: 58 },
+                    { id: "nose_width", name: "Nasenbreite", min: 0, max: 100, default: 45 },
+                    { id: "nostril_size", name: "Nasenloch Größe", min: 0, max: 100, default: 48 },
+                    { id: "nostril_separation", name: "Nasenloch Teilung", min: 0, max: 100, default: 50 },
+                    { id: "nose_thickness", name: "Dicke", min: 0, max: 100, default: 42 },
+                    { id: "bridge_upper", name: "Brücke, oberer Teil", min: 0, max: 100, default: 55 },
+                    { id: "bridge_lower", name: "Brücke, unterer Teil", min: 0, max: 100, default: 52 },
+                    { id: "bridge_width", name: "Rückenbreite", min: 0, max: 100, default: 45 },
+                    { id: "nose_tip_angle", name: "Winkel der Nasenspitze", min: 0, max: 100, default: 58 },
+                    { id: "nose_tip_shape", name: "Form der Nasenspitze", min: 0, max: 100, default: 55 },
+                    { id: "crooked_nose", name: "Krumme Nase", min: 0, max: 100, default: 35 }
+                ],
+                mouth: [
+                    { id: "mouth_width", name: "Mundbreite", min: 0, max: 100, default: 52 },
+                    { id: "mouth_fullness", name: "Fülle", min: 0, max: 100, default: 45 },
+                    { id: "lip_thickness", name: "Lippendicke", min: 0, max: 100, default: 42 },
+                    { id: "lip_proportion", name: "Lippenproportion", min: 0, max: 100, default: 50 },
+                    { id: "mouth_position", name: "Mundposition", min: 0, max: 100, default: 48 },
+                    { id: "mouth_corners", name: "Mundwinkel", min: 0, max: 100, default: 45 },
+                    { id: "cupids_bow_depth", name: "Tiefe Amorbogen", min: 0, max: 100, default: 52 },
+                    { id: "cupids_bow", name: "Amorbogen", min: 0, max: 100, default: 48 },
+                    { id: "mouth_shift", name: "Mund verschieben", min: 0, max: 100, default: 40 }
+                ],
+                chin: [
+                    { id: "chin_angle", name: "Kinnwinkel", min: 0, max: 100, default: 62 },
+                    { id: "chin_shape", name: "Kinnform", min: 0, max: 100, default: 58 },
+                    { id: "chin_length", name: "Kinnlänge", min: 0, max: 100, default: 55 },
+                    { id: "chin_attachment", name: "Kinnansatz", min: 0, max: 100, default: 52 },
+                    { id: "chin_position", name: "Kinnposition", min: 0, max: 100, default: 50 },
+                    { id: "jowls", name: "Hängebacken", min: 0, max: 100, default: 35 },
+                    { id: "chin_cleft", name: "Kinnspalte", min: 0, max: 100, default: 45 },
+                    { id: "upper_cleft", name: "Obere Kinnspalte", min: 0, max: 100, default: 40 },
+                    { id: "chin_neck", name: "Kinn - Hals", min: 0, max: 100, default: 48 }
+                ],
+                upperbody: [
+                    { id: "body_muscle", name: "Muskeln", min: 0, max: 100, default: 70 },
+                    { id: "neck_thickness", name: "Halsdicke", min: 0, max: 100, default: 55 },
+                    { id: "neck_length", name: "Halslänge", min: 0, max: 100, default: 52 },
+                    { id: "shoulders", name: "Schultern", min: 0, max: 100, default: 65 },
+                    { id: "chest_muscles", name: "Brustmuskeln", min: 0, max: 100, default: 68 },
+                    { id: "arm_length", name: "Armlänge", min: 0, max: 100, default: 58 },
+                    { id: "hand_size", name: "Handgröße", min: 0, max: 100, default: 52 },
+                    { id: "torso_length", name: "Länge des Oberkörpers", min: 0, max: 100, default: 55 },
+                    { id: "love_handles", name: "Fettpölsterchen", min: 0, max: 100, default: 30 },
+                    { id: "belly_size", name: "Bauchgröße", min: 0, max: 100, default: 35 }
+                ],
+                legs: [
+                    { id: "leg_muscles", name: "Beinmuskeln", min: 0, max: 100, default: 62 },
+                    { id: "leg_length", name: "Beinlänge", min: 0, max: 100, default: 58 },
+                    { id: "hip_width", name: "Breite der Hüfte", min: 0, max: 100, default: 48 },
+                    { id: "butt_size", name: "Hintern Größe", min: 0, max: 100, default: 45 },
+                    { id: "bulge", name: "Ausbeulung", min: 0, max: 100, default: 40 },
+                    { id: "hip_fat", name: "Hüftspeck", min: 0, max: 100, default: 32 },
+                    { id: "knee_angle", name: "Kniewinkel", min: 0, max: 100, default: 50 }
+                ]
+            },
+            female: {
+                body: [
+                    { id: "body_height", name: "Größe", min: 0, max: 100, default: 65 },
+                    { id: "body_thickness", name: "Körperbreite", min: 0, max: 100, default: 45 },
+                    { id: "body_fat", name: "Körperfett", min: 0, max: 100, default: 25 },
+                    { id: "body_float", name: "Schweben", min: 0, max: 100, default: 40 }
+                ],
+                head: [
+                    { id: "head_size", name: "Kopfgröße", min: 0, max: 100, default: 48 },
+                    { id: "head_stretch", name: "Kopfdtreckung", min: 0, max: 100, default: 52 },
+                    { id: "head_shape", name: "Kopfform", min: 0, max: 100, default: 55 },
+                    { id: "egg_head", name: "Eierkopf", min: 0, max: 100, default: 35 },
+                    { id: "head_length", name: "Kopflänge", min: 0, max: 100, default: 58 },
+                    { id: "face_distortion", name: "Gesichtsverzerrung", min: 0, max: 100, default: 40 },
+                    { id: "forehead_angle", name: "Stirnwinkel", min: 0, max: 100, default: 62 },
+                    { id: "brow_size", name: "Brauengröße", min: 0, max: 100, default: 60 },
+                    { id: "cheeks_upper", name: "Obere Wangen", min: 0, max: 100, default: 45 },
+                    { id: "cheeks_lower", name: "Wangen unterer Bereich", min: 0, max: 100, default: 42 },
+                    { id: "cheekbones", name: "Wangenknochen", min: 0, max: 100, default: 68 }
+                ],
+                eyes: [
+                    { id: "eye_size", name: "Augengröße", min: 0, max: 100, default: 52 },
+                    { id: "eye_openings", name: "Öffnungen", min: 0, max: 100, default: 55 },
+                    { id: "eye_position", name: "Augenstand", min: 0, max: 100, default: 50 },
+                    { id: "eye_outer_corners", name: "Äußere Augenwinkel", min: 0, max: 100, default: 48 },
+                    { id: "eye_nose_corner", name: "Ecke nasenseite", min: 0, max: 100, default: 45 },
+                    { id: "sunken_eyes", name: "Eingesunkene Augen", min: 0, max: 100, default: 58 },
+                    { id: "upper_eyelid", name: "Obere Lidfalte", min: 0, max: 100, default: 52 },
+                    { id: "eye_edges", name: "Augenränder", min: 0, max: 100, default: 48 },
+                    { id: "puffy_eyelids", name: "Geschwollene Lider", min: 0, max: 100, default: 35 },
+                    { id: "eyelash_length", name: "Wimpernlänge", min: 0, max: 100, default: 45 },
+                    { id: "eye_symmetry", name: "Symmetrie", min: 0, max: 100, default: 52 }
+                ],
+                ears: [
+                    { id: "ear_size", name: "Ohrengröße", min: 0, max: 100, default: 48 },
+                    { id: "ear_angle", name: "Ohrenwinkel", min: 0, max: 100, default: 50 },
+                    { id: "attached_earlobes", name: "Angewachsene Ohrläppchen", min: 0, max: 100, default: 55 },
+                    { id: "ear_tips", name: "Ohrenspitzen", min: 0, max: 100, default: 52 }
+                ],
+                nose: [
+                    { id: "nose_size", name: "Größe", min: 0, max: 100, default: 58 },
+                    { id: "nose_width", name: "Nasenbreite", min: 0, max: 100, default: 45 },
+                    { id: "nostril_size", name: "Nasenloch Größe", min: 0, max: 100, default: 48 },
+                    { id: "nostril_separation", name: "Nasenloch Teilung", min: 0, max: 100, default: 50 },
+                    { id: "nose_thickness", name: "Dicke", min: 0, max: 100, default: 42 },
+                    { id: "bridge_upper", name: "Brücke, oberer Teil", min: 0, max: 100, default: 55 },
+                    { id: "bridge_lower", name: "Brücke, unterer Teil", min: 0, max: 100, default: 52 },
+                    { id: "bridge_width", name: "Rückenbreite", min: 0, max: 100, default: 45 },
+                    { id: "nose_tip_angle", name: "Winkel der Nasenspitze", min: 0, max: 100, default: 58 },
+                    { id: "nose_tip_shape", name: "Form der Nasenspitze", min: 0, max: 100, default: 55 },
+                    { id: "crooked_nose", name: "Krumme Nase", min: 0, max: 100, default: 35 }
+                ],
+                mouth: [
+                    { id: "mouth_width", name: "Mundbreite", min: 0, max: 100, default: 52 },
+                    { id: "mouth_fullness", name: "Fülle", min: 0, max: 100, default: 45 },
+                    { id: "lip_thickness", name: "Lippendicke", min: 0, max: 100, default: 42 },
+                    { id: "lip_proportion", name: "Lippenproportion", min: 0, max: 100, default: 50 },
+                    { id: "mouth_position", name: "Mundposition", min: 0, max: 100, default: 48 },
+                    { id: "mouth_corners", name: "Mundwinkel", min: 0, max: 100, default: 45 },
+                    { id: "cupids_bow_depth", name: "Tiefe Amorbogen", min: 0, max: 100, default: 52 },
+                    { id: "cupids_bow", name: "Amorbogen", min: 0, max: 100, default: 48 },
+                    { id: "mouth_shift", name: "Mund verschieben", min: 0, max: 100, default: 40 }
+                ],
+                chin: [
+                    { id: "chin_angle", name: "Kinnwinkel", min: 0, max: 100, default: 62 },
+                    { id: "chin_shape", name: "Kinnform", min: 0, max: 100, default: 58 },
+                    { id: "chin_length", name: "Kinnlänge", min: 0, max: 100, default: 55 },
+                    { id: "chin_attachment", name: "Kinnansatz", min: 0, max: 100, default: 52 },
+                    { id: "chin_position", name: "Kinnposition", min: 0, max: 100, default: 50 },
+                    { id: "jowls", name: "Hängebacken", min: 0, max: 100, default: 35 },
+                    { id: "chin_cleft", name: "Kinnspalte", min: 0, max: 100, default: 45 },
+                    { id: "upper_cleft", name: "Obere Kinnspalte", min: 0, max: 100, default: 40 },
+                    { id: "chin_neck", name: "Kinn - Hals", min: 0, max: 100, default: 48 }
+                ],
+                upperbody: [
+                    { id: "body_muscle", name: "Muskeln", min: 0, max: 100, default: 70 },
+                    { id: "neck_thickness", name: "Halsdicke", min: 0, max: 100, default: 55 },
+                    { id: "neck_length", name: "Halslänge", min: 0, max: 100, default: 52 },
+                    { id: "chest_size", name: "Brustgröße", min: 0, max: 100, default: 50 },
+                    { id: "chest_firmness", name: "Brust Straffheit", min: 0, max: 100, default: 50 },
+                    { id: "decollete", name: "Dekolleté", min: 0, max: 100, default: 50 },
+                    { id: "shoulders", name: "Schultern", min: 0, max: 100, default: 65 },
+                    { id: "chest_muscles", name: "Brustmuskeln", min: 0, max: 100, default: 68 },
+                    { id: "arm_length", name: "Armlänge", min: 0, max: 100, default: 58 },
+                    { id: "hand_size", name: "Handgröße", min: 0, max: 100, default: 52 },
+                    { id: "torso_length", name: "Länge des Oberkörpers", min: 0, max: 100, default: 55 },
+                    { id: "love_handles", name: "Fettpölsterchen", min: 0, max: 100, default: 30 },
+                    { id: "belly_size", name: "Bauchgröße", min: 0, max: 100, default: 35 }
+                ],
+                legs: [
+                    { id: "leg_muscles", name: "Beinmuskeln", min: 0, max: 100, default: 62 },
+                    { id: "leg_length", name: "Beinlänge", min: 0, max: 100, default: 58 },
+                    { id: "hip_width", name: "Breite der Hüfte", min: 0, max: 100, default: 48 },
+                    { id: "butt_size", name: "Hintern Größe", min: 0, max: 100, default: 45 },
+                    { id: "bulge", name: "Ausbeulung", min: 0, max: 100, default: 40 },
+                    { id: "hip_fat", name: "Hüftspeck", min: 0, max: 100, default: 32 },
+                    { id: "knee_angle", name: "Kniewinkel", min: 0, max: 100, default: 50 }
+                ]
+            }
+        };
+    
+
+        // Preset Definitionen
+    window.SHAPE_PRESETS = {
+        male: {
+            standard: {
+                name: "Standard Shape (Männlich)",
+                parameters: {
+                    body_height: 50,
+                    body_thickness: 50,
+                    body_fat: 50,
+                    body_float: 50,
+                    head_size: 50,
+                    head_stretch: 50,
+                    head_shape: 50,
+                    egg_head: 50,
+                    head_length: 50,
+                    face_distortion: 50,
+                    forehead_angle: 50,
+                    brow_size: 50,
+                    cheeks_upper: 50,
+                    cheeks_lower: 50,
+                    cheekbones: 50,
+                    eye_size: 50,
+                    eye_openings: 50,
+                    eye_position: 50,
+                    eye_outer_corners: 50,
+                    eye_nose_corner: 50,
+                    sunken_eyes: 50,
+                    upper_eyelid: 50,
+                    eye_edges: 50,
+                    puffy_eyelids: 50,
+                    eyelash_length: 50,
+                    eye_symmetry: 50,
+                    ear_size: 50,
+                    ear_angle: 50,
+                    attached_earlobes: 50,
+                    ear_tips: 50,
+                    nose_size: 50,
+                    nose_width: 50,
+                    nostril_size: 50,
+                    nostril_separation: 50,
+                    nose_thickness: 50,
+                    bridge_upper: 50,
+                    bridge_lower: 50,
+                    bridge_width: 50,
+                    nose_tip_angle: 50,
+                    nose_tip_shape: 50,
+                    crooked_nose: 50,
+                    mouth_width: 50,
+                    mouth_fullness: 50,
+                    lip_thickness: 50,
+                    lip_proportion: 50,
+                    mouth_position: 50,
+                    mouth_corners: 50,
+                    cupids_bow_depth: 50,
+                    cupids_bow: 50,
+                    mouth_shift: 50,
+                    chin_angle: 50,
+                    chin_shape: 50,
+                    chin_length: 50,
+                    chin_attachment: 50,
+                    chin_position: 50,
+                    jowls: 50,
+                    chin_cleft: 50,
+                    upper_cleft: 50,
+                    chin_neck: 50,
+                    body_muscle: 50,
+                    neck_thickness: 50,
+                    neck_length: 50,
+                    shoulders: 50,
+                    chest_muscles: 50,
+                    arm_length: 50,
+                    hand_size: 50,
+                    torso_length: 50,
+                    love_handles: 50,
+                    belly_size: 50,
+                    leg_muscles: 50,
+                    leg_length: 50,
+                    hip_width: 50,
+                    butt_size: 50,
+                    bulge: 50,
+                    hip_fat: 50,
+                    knee_angle: 50
+                }
+            }
+        },
+        female: {
+            standard: {
+                name: "Standard Shape (Weiblich)",
+                parameters: {
+                    body_height: 50,
+                    body_thickness: 50,
+                    body_fat: 50,
+                    body_float: 50,
+                    head_size: 50,
+                    head_stretch: 50,
+                    head_shape: 50,
+                    egg_head: 50,
+                    head_length: 50,
+                    face_distortion: 50,
+                    forehead_angle: 50,
+                    brow_size: 50,
+                    cheeks_upper: 50,
+                    cheeks_lower: 50,
+                    cheekbones: 50,
+                    eye_size: 50,
+                    eye_openings: 50,
+                    eye_position: 50,
+                    eye_outer_corners: 50,
+                    eye_nose_corner: 50,
+                    sunken_eyes: 50,
+                    upper_eyelid: 50,
+                    eye_edges: 50,
+                    puffy_eyelids: 50,
+                    eyelash_length: 50,
+                    eye_symmetry: 50,
+                    ear_size: 50,
+                    ear_angle: 50,
+                    attached_earlobes: 50,
+                    ear_tips: 50,
+                    nose_size: 50,
+                    nose_width: 50,
+                    nostril_size: 50,
+                    nostril_separation: 50,
+                    nose_thickness: 50,
+                    bridge_upper: 50,
+                    bridge_lower: 50,
+                    bridge_width: 50,
+                    nose_tip_angle: 50,
+                    nose_tip_shape: 50,
+                    crooked_nose: 50,
+                    mouth_width: 50,
+                    mouth_fullness: 50,
+                    lip_thickness: 50,
+                    lip_proportion: 50,
+                    mouth_position: 50,
+                    mouth_corners: 50,
+                    cupids_bow_depth: 50,
+                    cupids_bow: 50,
+                    mouth_shift: 50,
+                    chin_angle: 50,
+                    chin_shape: 50,
+                    chin_length: 50,
+                    chin_attachment: 50,
+                    chin_position: 50,
+                    jowls: 50,
+                    chin_cleft: 50,
+                    upper_cleft: 50,
+                    chin_neck: 50,
+                    body_muscle: 50,
+                    neck_thickness: 50,
+                    neck_length: 50,
+                    chest_size: 50,
+                    chest_firmness: 50,
+                    decollete: 50,
+                    shoulders: 50,
+                    chest_muscles: 50,
+                    arm_length: 50,
+                    hand_size: 50,
+                    torso_length: 50,
+                    love_handles: 50,
+                    belly_size: 50,
+                    leg_muscles: 50,
+                    leg_length: 50,
+                    hip_width: 50,
+                    butt_size: 50,
+                    bulge: 50,
+                    hip_fat: 50,
+                    knee_angle: 50
+                }
+            }
+        }
+    };
+        // Add example presets to new structure
+        window.SHAPE_PRESETS.male.athletic = {
+            name: "Athletisch (Männlich)",
+            parameters: {
+                body_height: 55,
+                body_fat: 20,
+                body_muscle: 75,
+                body_thickness: 60,
+                torso_length: 58,
+                shoulders: 70,
+                chest_muscles: 65,
+                arm_length: 60,
+                hand_size: 55,
+                love_handles: 20,
+                belly_size: 30,
+                leg_muscles: 70,
+                leg_length: 60,
+                hip_width: 50,
+                butt_size: 45,
+                bulge: 50,
+                hip_fat: 30,
+                knee_angle: 50
+                // Add other parameters as needed
+            }
+        };
+        window.SHAPE_PRESETS.female.slim = {
+            name: "Schlank (Weiblich)",
+            parameters: {
+                body_height: 52,
+                body_fat: 15,
+                body_muscle: 30,
+                body_thickness: 35,
+                torso_length: 50,
+                chest_size: 40,
+                chest_firmness: 40,
+                decollete: 40,
+                shoulders: 45,
+                chest_muscles: 40,
+                arm_length: 45,
+                hand_size: 40,
+                love_handles: 15,
+                belly_size: 20,
+                leg_muscles: 30,
+                leg_length: 45,
+                hip_width: 42,
+                butt_size: 38,
+                bulge: 30,
+                hip_fat: 20,
+                knee_angle: 40
+                // Add other parameters as needed
+            }
+        };
+        window.SHAPE_PRESETS.female.curvy = {
+            name: "Kurvig (Weiblich)",
+            parameters: {
+                body_height: 50,
+                body_fat: 45,
+                body_muscle: 35,
+                body_thickness: 65,
+                torso_length: 48,
+                chest_size: 70,
+                chest_firmness: 65,
+                decollete: 65,
+                shoulders: 42,
+                chest_muscles: 70,
+                arm_length: 48,
+                hand_size: 45,
+                love_handles: 35,
+                belly_size: 40,
+                leg_muscles: 50,
+                leg_length: 50,
+                hip_width: 75,
+                butt_size: 65,
+                bulge: 40,
+                hip_fat: 35,
+                knee_angle: 50
+                // Add other parameters as needed
+            }
+        };
+        window.SHAPE_PRESETS.male.muscular = {
+            name: "Muskulös (Männlich)",
+            parameters: {
+                body_height: 58,
+                body_fat: 10,
+                body_muscle: 85,
+                body_thickness: 75,
+                torso_length: 62,
+                shoulders: 80,
+                chest_muscles: 75,
+                arm_length: 65,
+                hand_size: 60,
+                love_handles: 10,
+                belly_size: 20,
+                leg_muscles: 80,
+                leg_length: 65,
+                hip_width: 55,
+                butt_size: 50,
+                bulge: 60,
+                hip_fat: 20,
+                knee_angle: 55
+                // Add other parameters as needed
+            }
+        };
+        window.SHAPE_PRESETS.female.petite = {
+            name: "Zierlich (Weiblich)",
+            parameters: {
+                body_height: 45,
+                body_fat: 20,
+                body_muscle: 25,
+                body_thickness: 30,
+                torso_length: 45,
+                chest_size: 35,
+                chest_firmness: 30,
+                decollete: 30,
+                shoulders: 40,
+                chest_muscles: 35,
+                arm_length: 40,
+                hand_size: 35,
+                love_handles: 10,
+                belly_size: 15,
+                leg_muscles: 25,
+                leg_length: 40,
+                hip_width: 38,
+                butt_size: 30,
+                bulge: 20,
+                hip_fat: 15,
+                knee_angle: 35
+                // Add other parameters as needed
+            }
+        };
+        </script>
+                <!-- Zentrale JS-Module einbinden -->
+                <script src="js/export.js"></script>
+                <script src="js/config.js"></script>
+                <script src="js/preview.js"></script>
+                <script src="js/sliders.js"></script>
+</body>
+</html>
