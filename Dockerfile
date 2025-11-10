@@ -1,15 +1,7 @@
-# Multi-Stage Build für Production
-FROM node:18-alpine as builder
-
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-
-# Production Stage
+# Einfaches Nginx-Image für statische Dateien
 FROM nginx:alpine
 
-# Build der Web App kopieren
-COPY --from=builder /app /usr/share/nginx/html
+# Statische Web-App kopieren
 COPY . /usr/share/nginx/html
 
 # Nginx Configuration
