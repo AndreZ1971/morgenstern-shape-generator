@@ -8,7 +8,6 @@ services:
       - "8080:80"
       - "8443:443"
     volumes:
-      - ./src:/usr/share/nginx/html
       - ./logs:/var/log/nginx
     environment:
       - NODE_ENV=production
