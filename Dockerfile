@@ -10,7 +10,7 @@ FROM nginx:alpine
 
 # Build der Web App kopieren
 COPY --from=builder /app /usr/share/nginx/html
-COPY ./src /usr/share/nginx/html
+COPY . /usr/share/nginx/html
 
 # Nginx Configuration
 COPY nginx.conf /etc/nginx/nginx.conf
